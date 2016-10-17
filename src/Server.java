@@ -8,7 +8,7 @@ public class Server {
 		try {
 			@SuppressWarnings("resource")
 			ServerSocket server = new ServerSocket(4400);
-			while (true){
+			while (true) {
 				Socket socket = server.accept();
 				BufferedInputStream binst = new
 						BufferedInputStream(socket.getInputStream(),
@@ -25,7 +25,7 @@ public class Server {
 				}
 				message = message.trim();
 				socket.close();
-				if (message.equals("bye")){
+				if (message.equals("bye")) {
 					System.out.println("\n Closing ... goodbye!");
 					break;
 				}
