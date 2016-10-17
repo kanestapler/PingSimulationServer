@@ -1,37 +1,44 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class Server {
 
 	public static void main(String[] args) {
-		String message;
-		try {
-			@SuppressWarnings("resource")
-			ServerSocket server = new ServerSocket(4400);
-			while (true) {
-				Socket socket = server.accept();
-				BufferedInputStream binst = new
-						BufferedInputStream(socket.getInputStream(),
-								socket.getReceiveBufferSize());
-				System.out.print("\n RECEIVED MESSAGE: ");
-				message = "";
-				for (int i=0;i<socket.getReceiveBufferSize();i++) {
-					int data = binst.read();
-					if (data == -1) break;
-					else{
-						System.out.print ((char) data) ;
-						message += (char) (data);
-					}
-				}
-				message = message.trim();
-				socket.close();
-				if (message.equals("bye")) {
-					System.out.println("\n Closing ... goodbye!");
+		try{
+			// Create a datagram socket, bound to the specific port 2000
+			DatagramSocket socket = new DatagramSocket(2000);
+
+			System.out.println ("Bound to local port " + socket.getLocalPort());
+
+			// Create a datagram packet, containing a maximum buffer of 256 bytes
+			DatagramPacket packet = new DatagramPacket( new byte[256], 256 );
+
+			// Receive a packet - remember by default this is a blocking operation
+			socket.receive(packet);
+
+			System.out.println ("Packet received at " + new Date( ));
+			// Display packet information
+			InetAddress remote_addr = packet.getAddress();
+			System.out.println ("Sender: " + remote_addr.getHostAddress( ) );
+			System.out.println ("from Port: " + packet.getPort());
+
+			// Display packet contents, by reading from byte array
+			ByteArrayInputStream bin = new ByteArrayInputStream (packet.getData());
+
+			// Display only up to the length of the original UDP packet
+			for (int i=0; i < packet.getLength(); i++)  {
+				int data = bin.read();
+				if (data == -1)
 					break;
-				}
+				else
+					System.out.print ( (char) data) ;
 			}
-		} catch (Exception e) {
-			System.out.println("Error " + e.getMessage());
+
+			socket.close( );
+		}
+		catch (IOException e) 	{
+			System.out.println ("Error - " + e);
 		}
 	}
 
