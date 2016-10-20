@@ -5,9 +5,10 @@ public class Server {
 
 	public static void main(String[] args) {
 		final int NUMBER_OF_PINGS = 10;
+		 int firstPort = 2000;
 		try{
 			// Create a datagram socket, bound to the specific port 2000
-			DatagramSocket socket = new DatagramSocket(2000);
+			DatagramSocket socket = new DatagramSocket(firstPort);
 
 			System.out.println ("Bound to local port " + socket.getLocalPort());
 			
@@ -18,7 +19,7 @@ public class Server {
 				// Receive a packet - remember by default this is a blocking operation
 				socket.receive(packet);
 				
-				Thread thr = new RespondThread(packet);
+				Thread thr = new RespondThread(packet, i);
 				thr.start();
 			}
 
