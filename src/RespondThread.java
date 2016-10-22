@@ -66,9 +66,13 @@ public class RespondThread extends Thread {
 			packet.setAddress(remote_addr);
 			packet.setPort(secondPort+threadNumber);
 			//send the packet
-			long millis = (long) (Math.random() * 20);
-			Thread.sleep(millis);
-			socket.send(packet);
+			//Decide 1 in 10 chance to lose the packet
+			boolean shouldILoseIt = (int) (Math.random() * 10) == 1;
+			if (!shouldILoseIt) {
+				long millis = (long) (Math.random() * 200);
+				Thread.sleep(millis);
+				socket.send(packet);
+			}
 
 		}
 		catch (UnknownHostException ue){
